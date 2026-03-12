@@ -1,3 +1,4 @@
+# EduConnect v1.0.1 - Vercel Optimized
 import os
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
