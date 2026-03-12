@@ -1,10 +1,10 @@
-# EduConnect - Smart Collaborative Learning Platform
+# educonnect - Smart Collaborative Learning Platform
 
-EduConnect is a fully-featured online platform aimed at connecting college and university students with similar academic interests, enabling them to construct dynamic study groups, message in real-time, share resources, and receive AI-powered group recommendations.
+educonnect is a fully-featured online platform aimed at connecting college and university students with similar academic interests, enabling them to construct dynamic study groups, message in real-time, share resources, and receive AI-powered group recommendations.
 
 ## Project Structure
 ```
-EduConnect/
+educonnect/
 │
 ├── app.py                      # Main Flask Backend application
 ├── requirements.txt            # Python dependencies
@@ -42,7 +42,7 @@ Follow these steps to deploy and run the project locally.
 Make sure you have Python 3.8+ installed. Navigate to the project directory and install the required modules directly from the `requirements.txt` file.
 
 ```bash
-cd c:\EduConnect
+cd c:\educonnect
 pip install -r requirements.txt
 ```
 
