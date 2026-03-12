@@ -1,3 +1,3 @@
-Welcome Test User! Please click the link to verify your email endpoint:
+Welcome Manikanta! Please click the link to verify your email endpoint:
 
-http://127.0.0.1:5003/confirm/InRlc3RfMTc3MzMzMTMzMUBleGFtcGxlLmNvbSI.abLjgw.PP19w3W-Kk31KwBlMbbVwNsFbME
+http://127.0.0.1/confirm/Im1hbmlrYW50YTEyQGdtYWlsLmNvbSI.abLkfA.jVdk5MEDmspefFDpsfUqZ9VTn4k

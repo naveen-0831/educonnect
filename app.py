@@ -283,7 +283,8 @@ def dashboard():
     joined_groups = [MongoObject(g) for g in joined_groups_data]
     
     # Upcoming sessions
-    upcoming_sessions = list(db.study_sessions.find({'group_id': {'$in': group_ids}}))
+    upcoming_sessions_data = list(db.study_sessions.find({'group_id': {'$in': group_ids}}))
+    upcoming_sessions = [MongoObject(s) for s in upcoming_sessions_data]
     
     # Smart Recommendations
     all_groups_data = list(db.groups.find({}))
@@ -357,8 +358,11 @@ def group_detail(group_id):
         m['sender'] = MongoObject(sender) if sender else None
     messages = [MongoObject(m) for m in messages_data]
     
-    resources = list(db.resources.find({'group_id': gid}).sort('upload_time', -1))
-    sessions = list(db.study_sessions.find({'group_id': gid}).sort('date', 1))
+    resources_data = list(db.resources.find({'group_id': gid}).sort('upload_time', -1))
+    resources = [MongoObject(r) for r in resources_data]
+    
+    sessions_data = list(db.study_sessions.find({'group_id': gid}).sort('date', 1))
+    sessions = [MongoObject(s) for s in sessions_data]
     
     # Recommend partners
     user_data = db.users.find_one({'_id': user_id})
