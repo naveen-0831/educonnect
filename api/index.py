@@ -1,2 +1,2 @@
-from main_logic import app as application
+from .main_logic import app as application
 app = application

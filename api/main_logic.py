@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from models.recommendation_model import recommend_groups, recommend_partners
+from .models.recommendation_model import recommend_groups, recommend_partners
 from flask_mail import Mail, Message as MailMessage
 from itsdangerous import URLSafeTimedSerializer
 import requests as http_requests
@@ -16,7 +16,7 @@ import certifi
 # Load Environment Variables from .env file
 load_dotenv()
 
-app = Flask(__name__, instance_path='/tmp')
+app = Flask(__name__, instance_path='/tmp', template_folder='../templates', static_folder='../static')
 # Ensure secret key works locally and safely in production
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'educonnect_secret_key_123')
 
