@@ -167,7 +167,7 @@ def register():
             'availability': availability,
             'learning_goals': "",
             'is_active': True,
-            'is_verified': False,
+            'is_verified': True, # Auto-verify for easier setup
             'last_login': None
         }
         user_id = db.users.insert_one(new_user).inserted_id

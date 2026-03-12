@@ -1,7 +1,7 @@
 import requests
 import json
 
-BASE_URL = 'http://127.0.0.1:5000'
+BASE_URL = 'http://127.0.0.1:5003'
 session = requests.Session()
 
 def run_tests():
@@ -11,29 +11,39 @@ def run_tests():
     res = session.get(BASE_URL + '/')
     print(f"1. Home Page GET: {res.status_code == 200}")
     
+    import time
+    ts = int(time.time())
+    email = f"test_{ts}@example.com"
+    
     # 2. Test Registration
     reg_data = {
         'name': 'Test User',
-        'email': 'test@example.com',
+        'email': email,
         'password': 'password123',
         'subjects': 'Math, Computer Science',
         'skill_level': 'Intermediate',
         'availability': 'Weekends'
     }
     res = session.post(BASE_URL + '/register', data=reg_data)
-    print(f"2. Registration POST: {res.status_code == 200} (Redirected to login/home or success)")
+    print(f"2. Registration POST: {res.status_code == 200 or res.status_code == 302}")
     
     # 3. Test Login
     login_data = {
-        'email': 'test@example.com',
+        'email': email,
         'password': 'password123'
     }
-    res = session.post(BASE_URL + '/login', data=login_data)
-    print(f"3. Login POST: {res.status_code == 200} (Should redirect to dashboard)")
+    res = session.post(BASE_URL + '/login', data=login_data, allow_redirects=True)
+    print(f"3. Login POST: {res.status_code == 200}")
+    if "Logged in successfully" not in res.text:
+        print("Login failed message not found in response")
     
     # 4. Test Dashboard Accessibility (Logged In)
     res = session.get(BASE_URL + '/dashboard')
-    print(f"4. Dashboard GET: {res.status_code == 200 and 'Welcome back, Test User!' in res.text}")
+    dashboard_ok = res.status_code == 200 and 'Welcome back, Test User!' in res.text
+    print(f"4. Dashboard GET: {dashboard_ok}")
+    if not dashboard_ok:
+        print(f"Dashboard status: {res.status_code}")
+        # print(res.text[:500]) # Too long usually
     
     # 5. Create a Study Group
     group_data = {
