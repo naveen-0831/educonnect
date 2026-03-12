@@ -7,4 +7,5 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write('NAKED TEST: IF YOU SEE THIS, VERCEL IS UPDATING'.encode('utf-8'))
         return
-node_identifier: app = handler # Just in case Vercel looks for app
+
+app = handler
