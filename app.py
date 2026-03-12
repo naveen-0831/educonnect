@@ -30,7 +30,12 @@ if not MONGO_URI:
 else:
     # Production with SSL certificates
     client = MongoClient(MONGO_URI, tlsCAFile=certifi.where(), serverSelectionTimeoutMS=5000)
-    db = client.get_default_database()
+    try:
+        db = client.get_default_database()
+    except:
+        db = client.educonnect
+    if db is None:
+        db = client.educonnect
 
 # Handle Read-Only Filesystem on Vercel
 is_vercel = os.environ.get('VERCEL') == '1'
