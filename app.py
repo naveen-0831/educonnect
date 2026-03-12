@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 from models.recommendation_model import recommend_groups, recommend_partners
 from flask_mail import Mail, Message as MailMessage
 from itsdangerous import URLSafeTimedSerializer
-import google.generativeai as genai
+# AI imports removed
 import requests as http_requests
 from dotenv import load_dotenv
 
@@ -558,109 +558,7 @@ def schedule_session(group_id):
     return redirect(url_for('group_detail', group_id=group_id))
 
 
-# ----------------- MODULE 10: AI CHATBOT (STUDY GROUP) -----------------
 
-@app.route('/groups/<int:group_id>/ask_ai', methods=['POST'])
-@login_required
-def ask_ai(group_id):
-    data = request.get_json()
-    query = data.get('query', '').strip()
-    
-    if not query:
-        return jsonify({'error': 'Query cannot be empty.'}), 400
-
-    # Get the group subject for context
-    group = Group.query.get(group_id)
-    subject = group.subject if group else "General"
-
-    api_key = os.environ.get('GEMINI_API_KEY')
-    
-    # --- Strategy: Use Gemini if key is provided, otherwise use free Pollinations AI ---
-    if api_key:
-        try:
-            genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            system_prompt = (
-                f"You are a helpful academic AI assistant for a study group focused on '{subject}'. "
-                f"Provide clear, accurate, and educational answers."
-            )
-            full_prompt = f"{system_prompt}\n\nStudent Question: {query}"
-            response = model.generate_content(full_prompt)
-            if response and response.text:
-                return jsonify({'response': response.text})
-        except Exception as e:
-            print(f"Gemini API Error: {str(e)}")
-            # Fall through to free AI
-
-    # --- Free AI using Pollinations.ai (no API key needed) ---
-    try:
-        ai_response = http_requests.post(
-            'https://text.pollinations.ai/',
-            json={
-                'messages': [
-                    {'role': 'system', 'content': f"You are a helpful academic AI assistant for a study group on '{subject}'. Give clear, educational answers suitable for students. Keep it under 300 words."},
-                    {'role': 'user', 'content': query}
-                ],
-                'model': 'openai',
-                'seed': 42
-            },
-            headers={'Content-Type': 'application/json'},
-            timeout=30
-        )
-        if ai_response.status_code == 200 and ai_response.text.strip():
-            return jsonify({'response': ai_response.text.strip()})
-        else:
-            return jsonify({'response': 'AI could not generate a response right now. Please try again.'})
-    except Exception as e:
-        print(f"Free AI Error: {str(e)}")
-        return jsonify({'response': 'The AI service is temporarily unavailable. Please try again later.'})
-
-# ----------------- MODULE 11: GLOBAL AI CHATBOT -----------------
-
-@app.route('/api/chat', methods=['POST'])
-def global_chat():
-    data = request.get_json()
-    user_message = data.get('message', '').strip()
-    
-    if not user_message:
-        return jsonify({'message': 'Query cannot be empty.'}), 400
-        
-    api_key = os.environ.get('GEMINI_API_KEY')
-    
-    if api_key:
-        try:
-            genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            system_prompt = "You are EduConnect AI, a friendly and knowledgeable academic assistant."
-            full_prompt = f"{system_prompt}\n\nUser: {user_message}"
-            response = model.generate_content(full_prompt)
-            if response and response.text:
-                return jsonify({'response': response.text})
-        except Exception as e:
-            print(f"Gemini API Error: {str(e)}")
-
-    # --- Free AI using Pollinations.ai ---
-    try:
-        ai_response = http_requests.post(
-            'https://text.pollinations.ai/',
-            json={
-                'messages': [
-                    {'role': 'system', 'content': 'You are EduConnect AI, a friendly academic assistant. Help students with studies. Keep responses concise and helpful (max 250 words).'},
-                    {'role': 'user', 'content': user_message}
-                ],
-                'model': 'openai',
-                'seed': 42
-            },
-            headers={'Content-Type': 'application/json'},
-            timeout=30
-        )
-        if ai_response.status_code == 200 and ai_response.text.strip():
-            return jsonify({'response': ai_response.text.strip()})
-        else:
-            return jsonify({'message': 'I could not generate a response. Please try again.'}), 500
-    except Exception as e:
-        print(f"Free AI Error: {str(e)}")
-        return jsonify({'message': 'AI service temporarily unavailable. Please try again later.'}), 500
 
 
 # ----------------- CUSTOM ERROR HANDLERS -----------------

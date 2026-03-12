@@ -154,38 +154,7 @@
         </div>
     </div>
 
-    <!-- AI Chatbot Section (Horizontal) -->
-    <div class="card"
-        style="margin-top: 2rem; background: linear-gradient(145deg, rgba(79, 70, 229, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%); border: 1px solid var(--border-color);">
-        <h3 style="margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-            <span>🤖</span> AI Assistant
-        </h3>
-        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.4;">
-            Ask questions about <strong>{{ group.subject }}</strong>. Get instant answers powered by our knowledge
-            engine.
-        </p>
-        <form id="ai-form" onsubmit="askAI(event, {{ group.id }})"
-            style="display: flex; gap: 1rem; align-items: stretch; flex-direction: column;">
-            <div style="display: flex; gap: 1rem; align-items: center;">
-                <input type="text" id="ai-query" class="form-control"
-                    placeholder="Ask the AI about your study doubts..."
-                    style="flex-grow: 1; background: var(--bg-darker); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-md); padding: 1rem; font-size: 1rem;"
-                    required>
-                <button type="submit" id="ai-submit-btn" class="btn btn-primary"
-                    style="padding: 1rem 2.5rem; justify-content: center; background: linear-gradient(135deg, #6366F1 0%, #818CF8 100%); min-width: max-content; font-size: 1rem;">
-                    Ask AI ✨
-                </button>
-            </div>
-        </form>
 
-        <div id="ai-response-container"
-            style="display: none; margin-top: 1.5rem; background: rgba(0,0,0,0.3); padding: 1.25rem; border-radius: var(--radius-md); border-left: 4px solid var(--indigo-500);">
-            <div style="font-size: 0.85rem; color: var(--indigo-400); margin-bottom: 0.5rem; font-weight: 600;">🤖 AI
-                Response:</div>
-            <div id="ai-response-text"
-                style="color: var(--text-primary); font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap;"></div>
-        </div>
-    </div>
 
 
 
@@ -240,54 +209,5 @@
     {% endif %}
 </div>
 
-<script>
-    async function askAI(event, groupId) {
-        event.preventDefault();
-        const queryInput = document.getElementById('ai-query');
-        const query = queryInput.value.trim();
-        if (!query) return;
 
-        const responseContainer = document.getElementById('ai-response-container');
-        const responseText = document.getElementById('ai-response-text');
-        const submitBtn = document.getElementById('ai-submit-btn');
-
-        // Show loading state
-        responseContainer.style.display = 'block';
-        responseText.innerHTML = '<span style="color: var(--text-muted);">Let me research that for you... 🤔</span>';
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = 'Thinking...';
-
-        try {
-            const response = await fetch(`/groups/${groupId}/ask_ai`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ query: query })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                // Typing effect
-                responseText.innerHTML = '';
-                let i = 0;
-                const text = data.response;
-                const typeWriter = setInterval(() => {
-                    responseText.innerHTML += text.charAt(i);
-                    i++;
-                    if (i >= text.length) clearInterval(typeWriter);
-                }, 10); // 10ms per character
-            } else {
-                responseText.innerHTML = `<span style="color: var(--danger);">Error: ${data.error || 'Something went wrong.'}</span>`;
-            }
-        } catch (error) {
-            responseText.innerHTML = `<span style="color: var(--danger);">Network error to AI backend.</span>`;
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Ask AI ✨';
-            queryInput.value = '';
-        }
-    }
-</script>
 {% endblock %}
