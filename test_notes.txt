@@ -1,0 +1,11 @@
+EduConnect Study Notes
+======================
+
+Topic: Introduction to Machine Learning
+Date: March 9, 2026
+
+Key Points:
+1. Supervised Learning uses labeled data
+2. Unsupervised Learning finds hidden patterns
+3. TF-IDF converts text to numerical vectors
+4. Cosine Similarity measures text closeness

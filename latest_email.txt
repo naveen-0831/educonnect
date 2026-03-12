@@ -1,0 +1,3 @@
+Welcome Test User 2! Please click the link to verify your email endpoint:
+
+http://127.0.0.1:5000/confirm/InRlc3R1c2VyMkBleGFtcGxlLmNvbSI.abGQxQ.0bh6q7g8OLDMUyFf1T178IlG6oY

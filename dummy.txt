@@ -1,0 +1,2 @@
+This is a test file for EduConnect.
+We want to see if the content is preserved during upload and download.
