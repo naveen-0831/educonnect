@@ -10,8 +10,13 @@
             500</h1>
         <h2 style="font-size: 2rem; color: #fff; margin-bottom: 1.5rem;">Internal Server Error</h2>
         <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2.5rem; line-height: 1.6;">
-            We're sorry! Something went wrong on our end. Our team has been notified and we're working to fix it. 
-            Please try refreshing the page or come back later.
+            We're sorry! Something went wrong on our end. 
+            {% if error_message %}
+            <br><span style="color: #ffaa66; font-size: 0.9rem;"><strong>Error Details:</strong> {{ error_message }}</span>
+            {% else %}
+            Our team has been notified and we're working to fix it.
+            {% endif %}
+            <br>Please try refreshing the page or come back later.
         </p>
         <div style="display: flex; gap: 1rem; justify-content: center;">
             <a href="{{ url_for('index') }}" class="btn btn-lg btn-primary"

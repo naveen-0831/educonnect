@@ -20,7 +20,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'educonnect_secret_key_1
 
 # MongoDB Configuration
 MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/educonnect')
-client = MongoClient(MONGO_URI)
+client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
 db = client.get_default_database() if 'mongodb+srv' in MONGO_URI else client.educonnect
 
 app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
@@ -62,9 +62,12 @@ def login_required(func):
 @app.context_processor
 def inject_user():
     if 'user_id' in session:
-        user_data = db.users.find_one({'_id': ObjectId(session['user_id'])})
-        if user_data:
-            return dict(current_user=MongoObject(user_data))
+        try:
+            user_data = db.users.find_one({'_id': ObjectId(session['user_id'])})
+            if user_data:
+                return dict(current_user=MongoObject(user_data))
+        except Exception as e:
+            print(f"Database Error in inject_user: {e}")
     return dict(current_user=None)
 
 
@@ -72,10 +75,14 @@ def inject_user():
 
 @app.route('/')
 def index():
-    total_users = db.users.count_documents({})
-    active_users = db.users.count_documents({'is_active': True})
-    inactive_users = total_users - active_users
-    total_groups = db.groups.count_documents({})
+    try:
+        total_users = db.users.count_documents({})
+        active_users = db.users.count_documents({'is_active': True})
+        inactive_users = total_users - active_users
+        total_groups = db.groups.count_documents({})
+    except Exception as e:
+        print(f"Database connection error: {e}")
+        return render_template('500.html', error_message="Database is currently unavailable. Please check your MONGO_URI configuration."), 500
     
     our_features = [
         {"icon": "🎯", "color": "indigo", "title": "Smart Matching", "desc": "Our ML engine finds the perfect study partners and groups based on your subject, skill level, and schedule."},
