@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+instance/
+uploads/
+.env
+latest_email.txt
+server_log.txt
+test_*.py
+test/
+*.zip
+*.pdf
+*.txt
