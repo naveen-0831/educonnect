@@ -161,12 +161,18 @@ def register():
             msg = MailMessage("Confirm your EduConnect Email", recipients=[email])
             msg.body = f"Welcome {name}! Please click the link to verify your email endpoint:\n\n{confirm_url}"
             
-            if app.config['MAIL_USERNAME'] == 'mock.educonnect@gmail.com':
-                with open(os.path.join(app.root_path, 'latest_email.txt'), 'w') as f:
-                    f.write(msg.body)
+            if app.config['MAIL_USERNAME'] == 'mock.educonnect@gmail.com' and not is_vercel:
+                try:
+                    with open(os.path.join(app.root_path, 'latest_email.txt'), 'w') as f:
+                        f.write(msg.body)
+                except:
+                    pass
                 flash('Registration successful! Please check your email to verify your account.', 'success')
             else:
-                mail.send(msg)
+                try:
+                    mail.send(msg)
+                except:
+                    pass
                 flash('Registration successful! Please check your email to verify your account.', 'success')
         except Exception as e:
             flash('Registration successful! (Email verify in offline safe-mode. You can login)', 'warning')

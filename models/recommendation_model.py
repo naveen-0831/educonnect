@@ -1,6 +1,4 @@
-import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+# Heavy imports moved inside functions to speed up serverless cold starts
 
 def recommend_groups(user, all_groups, top_k=5):
     """
@@ -8,6 +6,10 @@ def recommend_groups(user, all_groups, top_k=5):
     """
     if not all_groups:
         return []
+
+    import pandas as pd
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
 
     # Prepare user profile text
     user_subjects = user.subjects if user.subjects else ""
@@ -79,6 +81,9 @@ def recommend_partners(current_user, all_users, top_k=5):
     other_users = [u for u in all_users if u.id != current_user.id]
     if not other_users:
         return []
+
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
 
     # Build profile text for the current user
     def build_profile_text(user):
