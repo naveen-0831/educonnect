@@ -1,11 +1,10 @@
-from http.server import BaseHTTPRequestHandler
+from flask import Flask
+app = Flask(__name__)
 
-class handler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type','text/plain')
-        self.end_headers()
-        self.wfile.write('NAKED TEST: IF YOU SEE THIS, VERCEL IS UPDATING'.encode('utf-8'))
-        return
+@app.route('/')
+def hello():
+    return "VERIFIED: EduConnect is Live (v1.0.4)"
 
-app = handler
+@app.route('/health')
+def health():
+    return "OK"
