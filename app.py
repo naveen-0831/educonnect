@@ -23,10 +23,17 @@ MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/educonnect')
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
 db = client.get_default_database() if 'mongodb+srv' in MONGO_URI else client.educonnect
 
-app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
+# Handle Read-Only Filesystem on Vercel
+is_vercel = os.environ.get('VERCEL') == '1'
+if is_vercel:
+    app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
+else:
+    app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
+
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 # Configuration for Flask-Mail
+# ... (rest of the mail config)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -37,8 +44,11 @@ mail = Mail(app)
 
 serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
-# Ensure upload directory exists
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+# Ensure upload directory exists - Wrapped in try-except for Vercel stability
+try:
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+except Exception as e:
+    print(f"Directory creation warning: {e}")
 
 # ----------------- HELPER CLASSES (To keep code clean) -----------------
 class MongoObject:
