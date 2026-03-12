@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}500 - Internal Server Error{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper"
+    style="min-height: calc(100vh - 72px); display: flex; justify-content: center; align-items: center; text-align: center;">
+    <div style="max-width: 600px; padding: 3rem;">
+        <h1
+            style="font-size: 6rem; background: var(--gradient-accent); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; line-height: 1;">
+            500</h1>
+        <h2 style="font-size: 2rem; color: #fff; margin-bottom: 1.5rem;">Internal Server Error</h2>
+        <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2.5rem; line-height: 1.6;">
+            We're sorry! Something went wrong on our end. Our team has been notified and we're working to fix it. 
+            Please try refreshing the page or come back later.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a href="{{ url_for('index') }}" class="btn btn-lg btn-primary"
+                style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                Return to Home
+            </a>
+            <button onclick="location.reload()" class="btn btn-lg btn-ghost"
+                style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                    <path d="M21 3v5h-5" />
+                </svg>
+                Try Again
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

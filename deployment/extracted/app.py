@@ -668,11 +668,6 @@ def global_chat():
 def page_not_found(e):
     return render_template('404.html'), 404
 
-@app.errorhandler(500)
-def internal_server_error(e):
-    db.session.rollback()  # Rollback session in case of DB error
-    return render_template('500.html'), 500
-
 # ----------------- SETUP AND RUN -----------------
 
 # Ensure database tables are created before the app starts
@@ -680,4 +675,4 @@ with app.app_context():
     db.create_all()
 
 if __name__ == '__main__':
-    app.run(debug=True, port=80)
+    app.run(debug=True, port=5000)
