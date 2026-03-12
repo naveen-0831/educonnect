@@ -10,6 +10,7 @@ import requests as http_requests
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+import certifi
 
 # Load Environment Variables from .env file
 load_dotenv()
@@ -19,9 +20,17 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'educonnect_secret_key_123')
 
 # MongoDB Configuration
-MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/educonnect')
-client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
-db = client.get_default_database() if 'mongodb+srv' in MONGO_URI else client.educonnect
+MONGO_URI = os.environ.get('MONGO_URI')
+
+if not MONGO_URI:
+    # Local fallback for development
+    MONGO_URI = 'mongodb://localhost:27017/educonnect'
+    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+    db = client.educonnect
+else:
+    # Production with SSL certificates
+    client = MongoClient(MONGO_URI, tlsCAFile=certifi.where(), serverSelectionTimeoutMS=5000)
+    db = client.get_default_database()
 
 # Handle Read-Only Filesystem on Vercel
 is_vercel = os.environ.get('VERCEL') == '1'
@@ -79,6 +88,10 @@ def inject_user():
         except Exception as e:
             print(f"Database Error in inject_user: {e}")
     return dict(current_user=None)
+
+@app.route('/health')
+def health():
+    return "EduConnect is healthy! DB status: UP" if db is not None else "EduConnect is healthy! DB status: PENDING"
 
 
 # ----------------- MODULE 1: HOME PAGE -----------------
