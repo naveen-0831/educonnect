@@ -16,7 +16,7 @@ import certifi
 # Load Environment Variables from .env file
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, instance_path='/tmp')
 # Ensure secret key works locally and safely in production
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'educonnect_secret_key_123')
 
